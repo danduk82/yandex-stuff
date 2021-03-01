@@ -15,6 +15,7 @@ matplotlib.use("Agg")
 import matplotlib.mlab as mlab
 import matplotlib.pyplot as plt
 import argparse as ap
+import pandas as pd
 
 
 class PhoutContents:
@@ -35,26 +36,14 @@ class PhoutContents:
             "net_code",
             "proto_code",
         ]
-        raw_values = {key: [] for key in self.fields}
-        for csvFileName in csvFileNameList:
-            with open(csvFileName, "r") as csvFile:
-                # sniffing csv file to detect dialect
-                self.dialect = csv.Sniffer().sniff(csvFile.readline())
-                csvFile.seek(0)
-                csvReader = csv.reader(csvFile, dialect=self.dialect)
-                cRow = 0
-                for row in csvReader:
-                    iCol = 0
-                    for cell in row:
-                        raw_values[self.fields[iCol]].append(cell)
-                        iCol += 1
-                    cRow += 1
         self.values = {}
-        for field in self.fields:
-            if not field == "tag":
-                self.values[field] = np.array([float(c) for c in raw_values[field]])
-            else:
-                self.values[field] = raw_values
+        for csv_file in csvFileNameList:
+            csv = pd.read_csv(csv_file, names=self.fields, sep="\t")
+            for k, v in csv.to_dict().items():
+                try:
+                    self.values[k] = self.values[k].append(csv[k].to_numpy())
+                except KeyError:
+                    self.values[k] = csv[k].to_numpy()
 
 
 class Stats:
