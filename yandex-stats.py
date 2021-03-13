@@ -59,8 +59,11 @@ class Stats:
 
         self.plotval = (self.contents.values["interval_real"][mask200]) / 1000.0
         self.stats = {
+            "id": self.options.testName,
             "mean": np.mean(self.plotval),
             "median": np.median(self.plotval),
+            "min": np.min(self.plotval),
+            "max": np.max(self.plotval),
             "std": np.std(self.plotval),
             "percentile90": np.percentile(self.plotval, 90),
             "percentile95": np.percentile(self.plotval, 95),
@@ -76,6 +79,17 @@ class Stats:
             * 100.0,
         }
 
+    def to_csv(self):
+        self.csv_file_name = "test.csv"
+        if os.path.exists(self.csv_file_name):
+            csv = pd.read_csv(self.csv_file_name)
+
+            pd.DataFrame(self.stats, index=[len(csv)]).sort_index(axis=1).to_csv(
+                self.csv_file_name, mode="a", header=False
+            )
+        else:
+            pd.DataFrame.from_records(self.stats, index=[0]).to_csv(self.csv_file_name)
+
     def __str__(self):
         r_str = "response time [ms] statistics for test : '{0}' \n".format(
             self.options.testName
@@ -87,9 +101,13 @@ class Stats:
     def plot(self):
         plt.ioff()
         plt.title("response time [ms] test : '{0}' ".format(self.options.testName))
-
+        maxtime = (
+            (self.stats["mean"] * 3)
+            if self.stats["mean"] * 3 < self.stats["max"]
+            else self.stats["max"]
+        )
         mybins = [
-            x * 10 for x in range(0, int(self.options.maxTime / 10) + 1)
+            x * 10 for x in range(0, int(maxtime / 10.0) + 1)
         ]  # for histogram, bins from 0 to maxTime, in 10ths of ms
         n, bins, patches = plt.hist(self.plotval, facecolor="green", bins=mybins)
         plt.xlabel("response time [ms]", fontsize=14)
@@ -126,7 +144,7 @@ class Stats:
         )
         plt.xticks(ind - (bar_width / 2.0) + bar_width, httpStatusStr)
         plt.draw()
-        plt.savefig(self.options.outFilePrefix + "http-status.png", dpi=300)
+        plt.savefig(self.options.outFilePrefix + "-http-status.png", dpi=300)
 
         plt.close()
 
@@ -247,3 +265,4 @@ if __name__ == "__main__":
 
     print(stats)
     stats.plot()
+    stats.to_csv()
