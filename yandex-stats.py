@@ -133,7 +133,7 @@ class Stats:
                 colors.append("red")
 
         plt.ioff()
-        plt.title("HTTP return status : '{0}' ".format(testName))
+        plt.title("HTTP return status : '{0}' ".format(self.options.testName))
         fig, ax = plt.subplots()
         bar_width = 0.35
         ind = np.arange(len(returnCodes))
@@ -227,7 +227,6 @@ Example:
         dest="testName",
         action="store",
         type=str,
-        default="yandex-test",
         help="test name to be used in the formatted output and graphics, default is 'yandex-test'",
     )
     optionGroup.add_argument(
@@ -236,7 +235,6 @@ Example:
         dest="outFilePrefix",
         action="store",
         type=str,
-        default="yandex-test",
         help="output file name prefix for figures, default is also 'yandex-test'",
     )
     optionGroup.add_argument(
@@ -258,8 +256,8 @@ if __name__ == "__main__":
         parser.print_usage()
         sys.exit(0)
 
-    testName = options.testName
-    outFileName = options.outFilePrefix
+    options.testName  = options.testName if options.testName  else os.path.basename(os.path.splitext(other[0])[0])
+    options.outFilePrefix = options.outFilePrefix if options.outFilePrefix  else os.path.basename(os.path.splitext(other[0])[0])
 
     stats = Stats(other, options)
 

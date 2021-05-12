@@ -16,8 +16,9 @@ europe = {8: [(128,87),(136,92)]}
 east_china = {8: [(202,99),(211,109)]}
 conus = {8: [(44,93),(69,105)]}
 countries = [europe, east_china, conus]
+countries = [conus]
 
-max_zl = 16
+max_zl = 17
 #for max_zl in range(8, 24):
 print(max_zl)
 # CONUS coverage (more or less)
@@ -38,12 +39,12 @@ zl = np.random.choice(np.arange(8, max_zl+1),size=(nb_urls), p=p)
 urls = []
 
 for z in zl:
-    c = np.random.randint(0,3)
+    c = np.random.randint(0,len(countries))
     y = np.random.randint(countries[c][z][0][0], countries[c][z][1][0])
     x = np.random.randint(countries[c][z][0][1], countries[c][z][1][1])
     urls.append(url_fmt.format(**{'base':base_url ,'z':z,'y':y,'x':x}))
 
-with open(f"{os.getenv('HOME')}/test/yandex_stuff/ammo_zl_8_{max_zl}.txt", 'w') as f:
+with open(f"{os.getenv('HOME')}/test/yandex_stuff/ammo_zl_8_{max_zl}_conus.txt", 'w') as f:
     f.write('\n'.join(np.unique(urls)))
 # c = 0
 # for url in urls[0:100]:
