@@ -19,7 +19,7 @@ import pandas as pd
 
 
 class PhoutContents:
-    """ reads CSV file and loads data"""
+    """reads CSV file and loads data"""
 
     def __init__(self, csvFileNameList):
         self.fields = [
@@ -256,8 +256,16 @@ if __name__ == "__main__":
         parser.print_usage()
         sys.exit(0)
 
-    options.testName  = options.testName if options.testName  else os.path.basename(os.path.splitext(other[0])[0])
-    options.outFilePrefix = options.outFilePrefix if options.outFilePrefix  else os.path.basename(os.path.splitext(other[0])[0])
+    options.testName = (
+        options.testName
+        if options.testName
+        else os.path.basename(os.path.splitext(other[0])[0])
+    )
+    options.outFilePrefix = (
+        options.outFilePrefix
+        if options.outFilePrefix
+        else os.path.basename(os.path.splitext(other[0])[0])
+    )
 
     stats = Stats(other, options)
 
