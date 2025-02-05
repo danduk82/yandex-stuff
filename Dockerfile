@@ -27,7 +27,7 @@ RUN apt-get update -q && \
 COPY requirements.txt /tmp/requirements.txt
 
 RUN pip3 install --break-system-packages  -r /tmp/requirements.txt
-RUN pip3 install --break-system-packages  ipython geoservercloud
+RUN pip3 install --break-system-packages  ipython geoservercloud dool
 
 
 COPY scripts /scripts
