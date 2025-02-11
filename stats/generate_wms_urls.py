@@ -4,7 +4,9 @@ import random
 import argparse as ap
 import sys
 
-CH_BBOX_WEBMERCATOR = (710000, 5831900, 1108800, 6003600)
+# CH_BBOX_WEBMERCATOR = (664000, 5752530, 1167250, 6072335) # True Swiss bbox
+
+CH_BBOX_WEBMERCATOR = (710000, 5831900, 1108800, 6003600) # smaller bbox to increase the chances of hitting data inside CH
 
 def compute_request_bbox(height, width, center, resolution):
     """
